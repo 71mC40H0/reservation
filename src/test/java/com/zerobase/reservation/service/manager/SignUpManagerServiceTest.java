@@ -81,7 +81,7 @@ class SignUpCustomerServiceTest {
                 .phone("01012345678")
                 .verifyExpiredAt(LocalDateTime.now().plusDays(1))
                 .verificationCode(code)
-                .isPartner(false)
+                .partner(false)
                 .build();
         given(customerRepository.findByEmail(anyString()))
                 .willReturn(Optional.of(manager));
@@ -122,7 +122,7 @@ class SignUpCustomerServiceTest {
                 .phone("01012345678")
                 .verifyExpiredAt(LocalDateTime.now().plusDays(1))
                 .verificationCode(code)
-                .isPartner(true)
+                .partner(true)
                 .build();
         given(customerRepository.findByEmail(anyString()))
                 .willReturn(Optional.of(manager));
@@ -149,7 +149,7 @@ class SignUpCustomerServiceTest {
                 .phone("01012345678")
                 .verifyExpiredAt(LocalDateTime.now().plusDays(1))
                 .verificationCode(code)
-                .isPartner(false)
+                .partner(false)
                 .build();
         given(customerRepository.findByEmail(anyString()))
                 .willReturn(Optional.of(manager));
@@ -176,7 +176,7 @@ class SignUpCustomerServiceTest {
                 .phone("01012345678")
                 .verifyExpiredAt(LocalDateTime.now().minusDays(2))
                 .verificationCode(code)
-                .isPartner(false)
+                .partner(false)
                 .build();
         given(customerRepository.findByEmail(anyString()))
                 .willReturn(Optional.of(manager));
@@ -203,7 +203,7 @@ class SignUpCustomerServiceTest {
                 .phone("01012345678")
                 .verifyExpiredAt(null)
                 .verificationCode(null)
-                .isPartner(false)
+                .partner(false)
                 .build();
         given(customerRepository.findById(anyLong()))
                 .willReturn(Optional.of(manager));
