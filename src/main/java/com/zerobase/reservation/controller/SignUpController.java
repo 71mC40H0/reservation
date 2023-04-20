@@ -23,4 +23,15 @@ public class SignUpController {
         signUpApplication.managerVerify(email, code);
         return ResponseEntity.ok("파트너 회원 가입이 완료되었습니다.");
     }
+
+    @PostMapping("/customer")
+    public ResponseEntity<String> customerSignUp(@RequestBody SignUpForm form) {
+        return ResponseEntity.ok(signUpApplication.customerSignUp(form));
+    }
+
+    @PutMapping("/customer/verify")
+    public ResponseEntity<String> customerVerifyEmail(String email, String code) {
+        signUpApplication.customerVerify(email, code);
+        return ResponseEntity.ok("회원 가입이 완료되었습니다.");
+    }
 }

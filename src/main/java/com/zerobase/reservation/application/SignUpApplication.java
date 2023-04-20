@@ -3,9 +3,11 @@ package com.zerobase.reservation.application;
 import com.zerobase.reservation.client.MailgunClient;
 import com.zerobase.reservation.client.mailgun.SendEmailForm;
 import com.zerobase.reservation.domain.form.SignUpForm;
+import com.zerobase.reservation.domain.model.Customer;
 import com.zerobase.reservation.domain.model.Manager;
 import com.zerobase.reservation.exception.CustomException;
 import com.zerobase.reservation.exception.ErrorCode;
+import com.zerobase.reservation.service.customer.SignUpCustomerService;
 import com.zerobase.reservation.service.manager.SignUpManagerService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -18,6 +20,7 @@ public class SignUpApplication {
 
     private final MailgunClient mailgunClient;
     private final SignUpManagerService signUpManagerService;
+    private final SignUpCustomerService signUpCustomerService;
 
     @Value(value = "${mailgun.api.sendEmail}")
     private String sendEmail;
@@ -42,6 +45,29 @@ public class SignUpApplication {
             mailgunClient.sendEmail(sendEmailForm);
             signUpManagerService.changeManagerValidateEmail(manager.getId(), code);
             return "회원 가입에 성공하었습니다. 파트너 회원 가입을 위해서 메일 인증을 하시기 바랍니다";
+        }
+    }
+
+    public void customerVerify(String email, String code) {
+        signUpCustomerService.verifyEmail(email, code);
+    }
+
+    public String customerSignUp(SignUpForm form) {
+        if (signUpCustomerService.isEmailExist(form.getEmail())) {
+            throw new CustomException(ErrorCode.ALREADY_REGISTERED_USER);
+        } else {
+            Customer customer = signUpCustomerService.signUp(form);
+
+            String code = getRandomCode();
+            SendEmailForm sendEmailForm = SendEmailForm.builder()
+                    .from(sendEmail)
+                    .to(form.getEmail())
+                    .subject("Verification Email!")
+                    .text(getVerificationEmailBody(customer.getEmail(), customer.getName(), "customer", code))
+                    .build();
+            mailgunClient.sendEmail(sendEmailForm);
+            signUpCustomerService.changeCustomerValidateEmail(customer.getId(), code);
+            return "회원 가입에 성공하었습니다. 메일 인증을 하시기 바랍니다";
         }
     }
 
