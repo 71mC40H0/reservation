@@ -1,23 +1,8 @@
-package com.zerobase.reservation.service.manager;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Optional;
+package com.zerobase.reservation.service.customer;
 
 import com.zerobase.reservation.domain.form.SignUpForm;
-import com.zerobase.reservation.domain.model.Manager;
-import com.zerobase.reservation.domain.repository.ManagerRepository;
+import com.zerobase.reservation.domain.model.Customer;
+import com.zerobase.reservation.domain.repository.CustomerRepository;
 import com.zerobase.reservation.exception.CustomException;
 import com.zerobase.reservation.exception.ErrorCode;
 import org.junit.jupiter.api.Assertions;
@@ -29,15 +14,24 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class SignUpManagerServiceTest {
-
+class SignUpCustomerServiceTest {
     @Mock
-    private ManagerRepository managerRepository;
+    private CustomerRepository customerRepository;
 
     @InjectMocks
-    private SignUpManagerService service;
+    private SignUpCustomerService service;
 
     @Test
     @DisplayName("회원 가입")
@@ -51,19 +45,19 @@ class SignUpManagerServiceTest {
                 .birth(now)
                 .phone("01000000000")
                 .build();
-        ArgumentCaptor<Manager> captor = ArgumentCaptor.forClass(Manager.class);
+        ArgumentCaptor<Customer> captor = ArgumentCaptor.forClass(Customer.class);
 
         //when
         service.signUp(form);
 
         //then
-        verify(managerRepository, times(1)).save(captor.capture());
+        verify(customerRepository, times(1)).save(captor.capture());
         assertEquals("test1@gmail.com", captor.getValue().getEmail());
         assertEquals("testname1", captor.getValue().getName());
         assertEquals("test1", captor.getValue().getPassword());
         assertEquals(now, captor.getValue().getBirth());
         assertEquals("01000000000", captor.getValue().getPhone());
-        assertFalse(captor.getValue().isPartner());
+        assertFalse(captor.getValue().isVerify());
         System.out.println(captor.getValue());
     }
 
@@ -72,7 +66,7 @@ class SignUpManagerServiceTest {
     void testVerifyEmailSuccess() {
         //given
         String code = "abcde12345";
-        Manager manager = Manager.builder()
+        Customer customer = Customer.builder()
                 .id(1L)
                 .email("test@gmail.com")
                 .name("testname")
@@ -81,23 +75,23 @@ class SignUpManagerServiceTest {
                 .phone("01012345678")
                 .verifyExpiredAt(LocalDateTime.now().plusDays(1))
                 .verificationCode(code)
-                .partner(false)
+                .verify(false)
                 .build();
-        given(managerRepository.findByEmail(anyString()))
-                .willReturn(Optional.of(manager));
+        given(customerRepository.findByEmail(anyString()))
+                .willReturn(Optional.of(customer));
 
         //when
         service.verifyEmail("test@gmail.com", "abcde12345");
 
         //then
-        assertTrue(manager.isPartner());
+        assertTrue(customer.isVerify());
     }
 
     @Test
     @DisplayName("이메일 인증 실패 - 일치하는 회원 없음")
     void testVerifyEmail_NotFoundUser() {
         //given
-        given(managerRepository.findByEmail(anyString()))
+        given(customerRepository.findByEmail(anyString()))
                 .willReturn(Optional.empty());
 
         //when
@@ -113,7 +107,7 @@ class SignUpManagerServiceTest {
     void testVerifyEmail_AlreadyVerified() {
         //given
         String code = "abcde12345";
-        Manager manager = Manager.builder()
+        Customer customer = Customer.builder()
                 .id(1L)
                 .email("test@gmail.com")
                 .name("testname")
@@ -122,10 +116,10 @@ class SignUpManagerServiceTest {
                 .phone("01012345678")
                 .verifyExpiredAt(LocalDateTime.now().plusDays(1))
                 .verificationCode(code)
-                .partner(true)
+                .verify(true)
                 .build();
-        given(managerRepository.findByEmail(anyString()))
-                .willReturn(Optional.of(manager));
+        given(customerRepository.findByEmail(anyString()))
+                .willReturn(Optional.of(customer));
 
         //when
         CustomException exception = assertThrows(CustomException.class,
@@ -140,7 +134,7 @@ class SignUpManagerServiceTest {
     void testVerifyEmail_WrongVerification() {
         //given
         String code = "abcde12345";
-        Manager manager = Manager.builder()
+        Customer customer = Customer.builder()
                 .id(1L)
                 .email("test@gmail.com")
                 .name("testname")
@@ -149,10 +143,10 @@ class SignUpManagerServiceTest {
                 .phone("01012345678")
                 .verifyExpiredAt(LocalDateTime.now().plusDays(1))
                 .verificationCode(code)
-                .partner(false)
+                .verify(false)
                 .build();
-        given(managerRepository.findByEmail(anyString()))
-                .willReturn(Optional.of(manager));
+        given(customerRepository.findByEmail(anyString()))
+                .willReturn(Optional.of(customer));
 
         //when
         CustomException exception = assertThrows(CustomException.class,
@@ -167,7 +161,7 @@ class SignUpManagerServiceTest {
     void testVerifyEmail_ExpireCode() {
         //given
         String code = "abcde12345";
-        Manager manager = Manager.builder()
+        Customer customer = Customer.builder()
                 .id(1L)
                 .email("test@gmail.com")
                 .name("testname")
@@ -176,10 +170,10 @@ class SignUpManagerServiceTest {
                 .phone("01012345678")
                 .verifyExpiredAt(LocalDateTime.now().minusDays(2))
                 .verificationCode(code)
-                .partner(false)
+                .verify(false)
                 .build();
-        given(managerRepository.findByEmail(anyString()))
-                .willReturn(Optional.of(manager));
+        given(customerRepository.findByEmail(anyString()))
+                .willReturn(Optional.of(customer));
 
         //when
         CustomException exception = assertThrows(CustomException.class,
@@ -194,7 +188,7 @@ class SignUpManagerServiceTest {
     void testChangeManagerValidateEmailSuccess() {
         //given
         String code = "abcde12345";
-        Manager manager = Manager.builder()
+        Customer customer = Customer.builder()
                 .id(1L)
                 .email("test@gmail.com")
                 .name("testname")
@@ -203,17 +197,17 @@ class SignUpManagerServiceTest {
                 .phone("01012345678")
                 .verifyExpiredAt(null)
                 .verificationCode(null)
-                .partner(false)
+                .verify(false)
                 .build();
-        given(managerRepository.findById(anyLong()))
-                .willReturn(Optional.of(manager));
+        given(customerRepository.findById(anyLong()))
+                .willReturn(Optional.of(customer));
 
         //when
-        service.changeManagerValidateEmail(1L, code);
+        service.changeCustomerValidateEmail(1L, code);
 
         //then
-        assertEquals(code, manager.getVerificationCode());
-        assertNotNull(manager.getVerifyExpiredAt());
+        assertEquals(code, customer.getVerificationCode());
+        assertNotNull(customer.getVerifyExpiredAt());
 
     }
 
@@ -222,15 +216,16 @@ class SignUpManagerServiceTest {
     void testChangeManagerValidateEmail_NotFoundUser() {
         //given
         String code = "abcde12345";
-        given(managerRepository.findById(anyLong()))
+        given(customerRepository.findById(anyLong()))
                 .willReturn(Optional.empty());
 
         //when
         CustomException exception = assertThrows(CustomException.class,
-                () -> service.changeManagerValidateEmail(1L, code));
+                () -> service.changeCustomerValidateEmail(1L, code));
 
         //then
         assertEquals(ErrorCode.NOT_FOUND_USER, exception.getErrorCode());
 
     }
+
 }
