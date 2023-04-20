@@ -29,7 +29,7 @@ public class Manager {
     private String phone;
     private LocalDateTime verifyExpiredAt;
     private String verificationCode;
-    private boolean isPartner;
+    private boolean partner;
 
     public static Manager from(SignUpForm form) {
         return Manager.builder()
@@ -38,7 +38,7 @@ public class Manager {
                 .name(form.getName())
                 .birth(form.getBirth())
                 .phone(form.getPhone())
-                .isPartner(false)
+                .partner(false)
                 .build();
     }
 
