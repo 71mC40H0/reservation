@@ -13,7 +13,9 @@ public enum ErrorCode {
     WRONG_VERIFICATION(HttpStatus.BAD_REQUEST, "잘못된 인증 시도입니다."),
     EXPIRE_CODE(HttpStatus.BAD_REQUEST, "인증 시간이 만료되었습니다."),
 
-    LOGIN_CHECK_FAIL(HttpStatus.BAD_REQUEST, "아이디 또는 패스워드가 잘못되었습니다.")
+    LOGIN_CHECK_FAIL(HttpStatus.BAD_REQUEST, "아이디 또는 패스워드가 잘못되었습니다."),
+
+    NOT_FOUND_RESTAURANT(HttpStatus.BAD_REQUEST, "레스토랑이 없습니다.")
 
     ;
 
