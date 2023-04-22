@@ -17,9 +17,7 @@ public class RestaurantDto {
     private String address;
     private String phone;
     private String description;
-
     private LocalTime openTime;
-
     private LocalTime lastEntryTime;
     private double longitude;
     private double latitude;
@@ -39,5 +37,17 @@ public class RestaurantDto {
                 .rating(restaurant.getRating())
                 .build();
     }
+
+    public static RestaurantDto searchResultFrom(Restaurant restaurant) {
+        return RestaurantDto.builder()
+                .id(restaurant.getId())
+                .name(restaurant.getName())
+                .address(restaurant.getAddress())
+                .longitude(restaurant.getLongitude())
+                .latitude(restaurant.getLatitude())
+                .rating(restaurant.getRating())
+                .build();
+    }
+
 
 }
