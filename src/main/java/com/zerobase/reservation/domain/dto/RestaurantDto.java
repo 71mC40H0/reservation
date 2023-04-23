@@ -2,6 +2,7 @@ package com.zerobase.reservation.domain.dto;
 
 import com.zerobase.reservation.domain.model.Restaurant;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalTime;
 
@@ -17,7 +18,9 @@ public class RestaurantDto {
     private String address;
     private String phone;
     private String description;
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime openTime;
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime lastEntryTime;
     private double longitude;
     private double latitude;
@@ -38,6 +41,7 @@ public class RestaurantDto {
                 .build();
     }
 
+    // 검색 결과시 나올 내용
     public static RestaurantDto searchResultFrom(Restaurant restaurant) {
         return RestaurantDto.builder()
                 .id(restaurant.getId())
@@ -48,6 +52,4 @@ public class RestaurantDto {
                 .rating(restaurant.getRating())
                 .build();
     }
-
-
 }
