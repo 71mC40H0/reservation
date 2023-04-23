@@ -3,7 +3,6 @@ package com.zerobase.reservation.service.reservation;
 import com.zerobase.reservation.domain.form.ReservationForm;
 import com.zerobase.reservation.domain.model.Reservation;
 import com.zerobase.reservation.domain.repository.ReservationRepository;
-import com.zerobase.reservation.domain.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import javax.transaction.Transactional;
 @RequiredArgsConstructor
 public class ReservationService {
     private final ReservationRepository reservationRepository;
-    private final RestaurantRepository restaurantRepository;
 
     @Transactional
     public Reservation reserveRestaurant(Long customerId, Long restaurantId, ReservationForm form) {
