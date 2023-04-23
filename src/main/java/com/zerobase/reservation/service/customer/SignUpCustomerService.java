@@ -27,7 +27,6 @@ public class SignUpCustomerService {
         return customerRepository.findByEmail(email.toLowerCase(Locale.ROOT)).isPresent();
     }
 
-    // 점장은 이메일 인증 시 파트너 회원이 되는 것으로 설정
     @Transactional
     public void verifyEmail(String email, String code) {
         Customer customer = customerRepository.findByEmail(email)

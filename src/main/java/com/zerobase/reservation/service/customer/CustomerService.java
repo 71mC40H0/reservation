@@ -19,6 +19,5 @@ public class CustomerService {
 
     public Optional<Customer> findValidCustomer(String email, String password) {
         return customerRepository.findByEmailAndPasswordAndVerifyIsTrue(email, password);
-
     }
 }
