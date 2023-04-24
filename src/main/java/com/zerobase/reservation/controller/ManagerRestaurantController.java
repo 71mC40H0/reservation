@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/manager/restaurant")
 @RequiredArgsConstructor
@@ -15,7 +18,15 @@ public class ManagerRestaurantController {
     private final RestaurantService restaurantService;
     private final JwtAuthenticationProvider provider;
 
-    @PostMapping
+    // 점장이 소유한 식당 조회
+    @GetMapping
+    public ResponseEntity<List<RestaurantDto>> getRestaurants(@RequestHeader(name = "X-AUTH-TOKEN") String token) {
+        return ResponseEntity.ok(restaurantService.findAllByManagerId(provider.getUserVo(token).getId())
+                .stream().map(RestaurantDto::from).collect(Collectors.toList()));
+    }
+
+    // 식당 추가
+    @PostMapping("/add")
     public ResponseEntity<RestaurantDto> addRestaurant(@RequestHeader(name = "X-AUTH-TOKEN") String token,
                                                        @RequestBody AddRestaurantForm form) {
         return ResponseEntity.ok(

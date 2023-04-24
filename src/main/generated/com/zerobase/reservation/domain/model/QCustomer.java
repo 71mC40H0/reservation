@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -30,6 +31,8 @@ public class QCustomer extends EntityPathBase<Customer> {
     public final StringPath password = createString("password");
 
     public final StringPath phone = createString("phone");
+
+    public final ListPath<Reservation, QReservation> reservations = this.<Reservation, QReservation>createList("reservations", Reservation.class, QReservation.class, PathInits.DIRECT2);
 
     public final StringPath verificationCode = createString("verificationCode");
 

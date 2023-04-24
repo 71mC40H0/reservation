@@ -1,13 +1,12 @@
 package com.zerobase.reservation.domain.model;
 
-import com.zerobase.reservation.domain.form.ReservationForm;
+import com.zerobase.reservation.domain.form.AddReservationForm;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -21,11 +20,16 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long customerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
-    private Long restaurantId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
 
-    private LocalDateTime visitDateTime;
+    private LocalDate visitDate;
+    private LocalTime visitTime;
 
     private int numberOfPeople;
 
@@ -34,14 +38,15 @@ public class Reservation {
     private boolean approved;
     private boolean finished;
 
-    public static Reservation of(Long customerId, Long restaurantId, ReservationForm form, String verificationCode) {
+    public static Reservation of(Customer customer, Restaurant restaurant, AddReservationForm form, String verificationCode) {
         return Reservation.builder()
-                .customerId(customerId)
-                .restaurantId(restaurantId)
-                .visitDateTime(form.getVisitDateTime())
+                .customer(customer)
+                .restaurant(restaurant)
+                .visitDate(form.getVisitDate())
+                .visitTime(form.getVisitTime())
                 .numberOfPeople(form.getNumberOfPeople())
                 .verificationCode(verificationCode)
-                .verifyExpiredAt(form.getVisitDateTime().minusMinutes(10))
+                .verifyExpiredAt(form.getVisitDate().atTime(form.getVisitTime()).minusMinutes(10))
                 .approved(false)
                 .finished(false)
                 .build();

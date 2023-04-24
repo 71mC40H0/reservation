@@ -6,6 +6,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 @Entity
@@ -30,6 +32,9 @@ public class Customer {
     private LocalDateTime verifyExpiredAt;
     private String verificationCode;
     private boolean verify;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reservation> reservations = new ArrayList<>();
 
     public static Customer from(SignUpForm form) {
         return Customer.builder()
