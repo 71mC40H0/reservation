@@ -36,6 +36,8 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<>();
 
+
+
     public static Customer from(SignUpForm form) {
         return Customer.builder()
                 .email(form.getEmail().toLowerCase(Locale.ROOT))

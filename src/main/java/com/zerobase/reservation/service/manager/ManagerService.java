@@ -2,18 +2,14 @@ package com.zerobase.reservation.service.manager;
 
 import com.zerobase.reservation.domain.model.Manager;
 import com.zerobase.reservation.domain.model.Reservation;
-import com.zerobase.reservation.domain.model.Restaurant;
 import com.zerobase.reservation.domain.repository.ManagerRepository;
 import com.zerobase.reservation.domain.repository.ReservationRepository;
-import com.zerobase.reservation.domain.repository.RestaurantRepository;
 import com.zerobase.reservation.exception.CustomException;
 import com.zerobase.reservation.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,7 +17,6 @@ import java.util.Optional;
 public class ManagerService {
     private final ManagerRepository managerRepository;
     private final ReservationRepository reservationRepository;
-    private final RestaurantRepository restaurantRepository;
 
     public Optional<Manager> findByIdAndEmail(Long id, String email) {
         return managerRepository.findByIdAndEmail(id, email);
@@ -29,17 +24,6 @@ public class ManagerService {
 
     public Optional<Manager> findPartnerMember(String email, String password) {
         return managerRepository.findByEmailAndPasswordAndPartnerIsTrue(email, password);
-    }
-
-    // 기간 및 매장 ID로 예약 조회
-    public List<Reservation> findAllByRestaurantIdAndVisitDateBetween(Long managerId, Long restaurantId, LocalDate startDate, LocalDate endDate) {
-        Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_RESTAURANT));
-
-        if (!managerId.equals(restaurant.getManager().getId())) {
-            throw new CustomException(ErrorCode.INVALID_RESTAURANT);
-        }
-        return reservationRepository.findAllByRestaurantIdAndVisitDateBetween(restaurantId, startDate, endDate);
     }
 
     // 예약을 승인한 경우 Reservation의 approved가 true가 되며,

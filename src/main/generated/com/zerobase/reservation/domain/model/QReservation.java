@@ -34,6 +34,8 @@ public class QReservation extends EntityPathBase<Reservation> {
 
     public final QRestaurant restaurant;
 
+    public final QReview review;
+
     public final StringPath verificationCode = createString("verificationCode");
 
     public final DateTimePath<java.time.LocalDateTime> verifyExpiredAt = createDateTime("verifyExpiredAt", java.time.LocalDateTime.class);
@@ -62,6 +64,7 @@ public class QReservation extends EntityPathBase<Reservation> {
         super(type, metadata, inits);
         this.customer = inits.isInitialized("customer") ? new QCustomer(forProperty("customer")) : null;
         this.restaurant = inits.isInitialized("restaurant") ? new QRestaurant(forProperty("restaurant"), inits.get("restaurant")) : null;
+        this.review = inits.isInitialized("review") ? new QReview(forProperty("review"), inits.get("review")) : null;
     }
 
 }

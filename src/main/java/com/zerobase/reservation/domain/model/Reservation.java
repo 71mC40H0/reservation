@@ -7,6 +7,8 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -37,6 +39,9 @@ public class Reservation {
     private LocalDateTime verifyExpiredAt;
     private boolean approved;
     private boolean finished;
+
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Review review;
 
     public static Reservation of(Customer customer, Restaurant restaurant, AddReservationForm form, String verificationCode) {
         return Reservation.builder()

@@ -29,6 +29,17 @@ public class ReservationService {
         return reservationRepository.findAllByCustomerIdAndVisitDateBetween(customerId, startDate, endDate);
     }
 
+    // 기간 및 매장 id로 예약 조회
+    public List<Reservation> findAllByRestaurantIdAndVisitDateBetween(Long managerId, Long restaurantId, LocalDate startDate, LocalDate endDate) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_RESTAURANT));
+
+        if (!managerId.equals(restaurant.getManager().getId())) {
+            throw new CustomException(ErrorCode.INVALID_RESTAURANT);
+        }
+        return reservationRepository.findAllByRestaurantIdAndVisitDateBetween(restaurantId, startDate, endDate);
+    }
+
     // 매장 예약
     @Transactional
     public Reservation reserveRestaurant(Long customerId, Long restaurantId, AddReservationForm form) {
