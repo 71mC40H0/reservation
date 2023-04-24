@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     List<Reservation> findAllByRestaurantIdAndVisitDateBetween(Long restaurantId, LocalDate startDate, LocalDate endDate);
+
+    List<Reservation> findAllByCustomerIdAndVisitDateBetween(Long customerId, LocalDate startDate, LocalDate endDate);
 }

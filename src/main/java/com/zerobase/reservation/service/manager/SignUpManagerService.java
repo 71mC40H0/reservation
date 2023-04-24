@@ -19,6 +19,7 @@ public class SignUpManagerService {
 
     private final ManagerRepository managerRepository;
 
+    // 회원 가입
     public Manager signUp(SignUpForm form) {
         return managerRepository.save(Manager.from(form));
     }
@@ -28,26 +29,28 @@ public class SignUpManagerService {
     }
 
     // 점장은 이메일 인증 시 파트너 회원이 되는 것으로 설정
+    // 이메일 인증
     @Transactional
     public void verifyEmail(String email, String code) {
         Manager manager = managerRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-        if(manager.isPartner()) {
+        if (manager.isPartner()) {
             throw new CustomException(ErrorCode.ALREADY_VERIFIED);
-        } else if(!manager.getVerificationCode().equals(code)) {
+        } else if (!manager.getVerificationCode().equals(code)) {
             throw new CustomException(ErrorCode.WRONG_VERIFICATION);
-        } else if(manager.getVerifyExpiredAt().isBefore(LocalDateTime.now())) {
+        } else if (manager.getVerifyExpiredAt().isBefore(LocalDateTime.now())) {
             throw new CustomException(ErrorCode.EXPIRE_CODE);
         }
         manager.setPartner(true);
     }
 
+    // 이메일 인증 기간 및 인증 코드 설정
     @Transactional
     public void changeManagerValidateEmail(Long managerId, String verificationCode) {
         Optional<Manager> managerOptional = managerRepository.findById(managerId);
 
-        if(managerOptional.isPresent()) {
+        if (managerOptional.isPresent()) {
             Manager manager = managerOptional.get();
             manager.setVerificationCode(verificationCode);
             manager.setVerifyExpiredAt(LocalDateTime.now().plusDays(1));

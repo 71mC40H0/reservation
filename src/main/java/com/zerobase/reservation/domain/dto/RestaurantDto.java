@@ -25,6 +25,8 @@ public class RestaurantDto {
     private double latitude;
     private double rating;
 
+    private List<ReviewDto> reviews;
+
     private List<ReservationDto> reservations;
 
     public static RestaurantDto from(Restaurant restaurant) {
@@ -48,6 +50,9 @@ public class RestaurantDto {
 
     // 검색 결과시 나올 내용
     public static RestaurantDto searchResultFrom(Restaurant restaurant) {
+        List<ReviewDto> reviews = restaurant.getReservations()
+                .stream().map(r -> ReviewDto.from(r.getReview())).collect(Collectors.toList());
+
         return RestaurantDto.builder()
                 .id(restaurant.getId())
                 .name(restaurant.getName())
@@ -55,6 +60,7 @@ public class RestaurantDto {
                 .longitude(restaurant.getLongitude())
                 .latitude(restaurant.getLatitude())
                 .rating(restaurant.getRating())
+                .reviews(reviews)
                 .build();
     }
 }

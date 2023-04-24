@@ -14,6 +14,7 @@ import java.util.List;
 public class RestaurantSearchService {
     private final RestaurantRepository restaurantRepository;
 
+    // 매장 검색
     public List<Restaurant> searchByName(String name) {
         return restaurantRepository.searchByName(name);
     }

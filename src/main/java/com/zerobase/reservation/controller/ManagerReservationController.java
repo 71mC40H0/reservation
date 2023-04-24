@@ -3,6 +3,7 @@ package com.zerobase.reservation.controller;
 import com.zerobase.reservation.config.JwtAuthenticationProvider;
 import com.zerobase.reservation.domain.dto.ReservationDto;
 import com.zerobase.reservation.service.manager.ManagerService;
+import com.zerobase.reservation.service.reservation.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +18,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ManagerReservationController {
     private final ManagerService managerService;
+    private final ReservationService reservationService;
     private final JwtAuthenticationProvider provider;
 
     // 날짜로 해당 레스토랑의 예약 조회
     @GetMapping
-    public ResponseEntity<List<ReservationDto>> getReservationInfos(@RequestHeader(name = "X-AUTH-TOKEN") String token,
+    public ResponseEntity<List<ReservationDto>> getReservations(@RequestHeader(name = "X-AUTH-TOKEN") String token,
                                                                     @RequestParam Long restaurantId,
                                                                     @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                                                     @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        return ResponseEntity.ok(managerService.findAllByRestaurantIdAndVisitDateBetween(
+        return ResponseEntity.ok(reservationService.findAllByRestaurantIdAndVisitDateBetween(
                         provider.getUserVo(token).getId(), restaurantId, startDate, endDate)
                 .stream().map(ReservationDto::from).collect(Collectors.toList()));
     }

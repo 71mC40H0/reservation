@@ -19,6 +19,7 @@ public class SignUpCustomerService {
 
     private final CustomerRepository customerRepository;
 
+    // 회원 가입
     public Customer signUp(SignUpForm form) {
         return customerRepository.save(Customer.from(form));
     }
@@ -27,6 +28,7 @@ public class SignUpCustomerService {
         return customerRepository.findByEmail(email.toLowerCase(Locale.ROOT)).isPresent();
     }
 
+    // 이메일 인증
     @Transactional
     public void verifyEmail(String email, String code) {
         Customer customer = customerRepository.findByEmail(email)
@@ -42,6 +44,7 @@ public class SignUpCustomerService {
         customer.setVerify(true);
     }
 
+    // 이메일 인증 기간 및 인증 코드 설정
     @Transactional
     public void changeCustomerValidateEmail(Long customerId, String verificationCode) {
         Optional<Customer> customerOptional = customerRepository.findById(customerId);
