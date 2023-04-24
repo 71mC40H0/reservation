@@ -37,6 +37,9 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<>();
 
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Kiosk> kiosks = new ArrayList<>();
+
     public static Restaurant of(Manager manager, AddRestaurantForm form) {
         return Restaurant.builder()
                 .manager(manager)

@@ -14,6 +14,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +24,12 @@ public class ReservationService {
     private final CustomerRepository customerRepository;
     private final RestaurantRepository restaurantRepository;
 
+    // 기간과 매장이용자 id로 예약 조회
+    public List<Reservation> findAllByCustomerIdAndVisitDateBetween(Long customerId, LocalDate startDate, LocalDate endDate) {
+        return reservationRepository.findAllByCustomerIdAndVisitDateBetween(customerId, startDate, endDate);
+    }
 
+    // 매장 예약
     @Transactional
     public Reservation reserveRestaurant(Long customerId, Long restaurantId, AddReservationForm form) {
         Customer customer = customerRepository.findById(customerId)

@@ -24,6 +24,7 @@ public class RestaurantService {
         return restaurantRepository.findAllByManagerId(managerId);
     }
 
+    // 매장 추가
     @Transactional
     public Restaurant addRestaurant(Long managerId, AddRestaurantForm form) {
         Manager manager = managerRepository.findById(managerId)

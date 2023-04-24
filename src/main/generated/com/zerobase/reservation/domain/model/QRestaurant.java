@@ -28,6 +28,8 @@ public class QRestaurant extends EntityPathBase<Restaurant> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final ListPath<Kiosk, QKiosk> kiosks = this.<Kiosk, QKiosk>createList("kiosks", Kiosk.class, QKiosk.class, PathInits.DIRECT2);
+
     public final TimePath<java.time.LocalTime> lastEntryTime = createTime("lastEntryTime", java.time.LocalTime.class);
 
     public final NumberPath<Double> latitude = createNumber("latitude", Double.class);

@@ -20,6 +20,7 @@ public class ReservationDto {
     private LocalDate visitDate;
     private LocalTime visitTime;
     private int numberOfPeople;
+    private String verificationCode;
 
     private boolean approved;
     private boolean finished;
@@ -33,6 +34,7 @@ public class ReservationDto {
                 .visitDate(reservation.getVisitDate())
                 .visitTime(reservation.getVisitTime())
                 .numberOfPeople(reservation.getNumberOfPeople())
+                .verificationCode(reservation.getVerificationCode())
                 .approved(reservation.isApproved())
                 .finished(reservation.isFinished())
                 .build();
