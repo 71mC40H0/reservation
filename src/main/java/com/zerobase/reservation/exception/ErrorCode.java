@@ -15,7 +15,11 @@ public enum ErrorCode {
 
     LOGIN_CHECK_FAIL(HttpStatus.BAD_REQUEST, "아이디 또는 패스워드가 잘못되었습니다."),
 
-    NOT_FOUND_RESTAURANT(HttpStatus.BAD_REQUEST, "레스토랑이 없습니다.")
+    NOT_FOUND_RESTAURANT(HttpStatus.BAD_REQUEST, "해당 레스토랑이 없습니다."),
+    NOT_FOUND_RESERVATION(HttpStatus.BAD_REQUEST, "해당 예약이 없습니다."),
+    ALREADY_APPROVED_RESERVATION(HttpStatus.BAD_REQUEST, "이미 승인된 예약입니다."),
+    ALREADY_DENIED_RESERVATION(HttpStatus.BAD_REQUEST, "이미 거절된 예약입니다."),
+    NOT_VALID_RESTAURANT(HttpStatus.BAD_REQUEST, "해당 점장의 레스토랑이 아닙니다.")
 
     ;
 

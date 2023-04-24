@@ -2,9 +2,10 @@ package com.zerobase.reservation.domain.dto;
 
 import com.zerobase.reservation.domain.model.Restaurant;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -18,15 +19,18 @@ public class RestaurantDto {
     private String address;
     private String phone;
     private String description;
-    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime openTime;
-    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime lastEntryTime;
     private double longitude;
     private double latitude;
     private double rating;
 
+    private List<ReservationDto> reservations;
+
     public static RestaurantDto from(Restaurant restaurant) {
+        List<ReservationDto> reservations = restaurant.getReservations()
+                .stream().map(ReservationDto::from).collect(Collectors.toList());
+
         return RestaurantDto.builder()
                 .id(restaurant.getId())
                 .name(restaurant.getName())
@@ -38,6 +42,7 @@ public class RestaurantDto {
                 .longitude(restaurant.getLongitude())
                 .latitude(restaurant.getLatitude())
                 .rating(restaurant.getRating())
+                .reservations(reservations)
                 .build();
     }
 

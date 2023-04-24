@@ -5,15 +5,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReservationForm {
+public class AddReservationForm {
 
-    LocalDateTime visitDateTime;
+    private LocalDate visitDate;
+    private LocalTime visitTime;
     int numberOfPeople;
 
 }

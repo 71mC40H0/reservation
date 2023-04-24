@@ -2,7 +2,7 @@ package com.zerobase.reservation.controller;
 
 import com.zerobase.reservation.config.JwtAuthenticationProvider;
 import com.zerobase.reservation.domain.dto.ReservationDto;
-import com.zerobase.reservation.domain.form.ReservationForm;
+import com.zerobase.reservation.domain.form.AddReservationForm;
 import com.zerobase.reservation.service.reservation.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class CustomerController {
     @PostMapping("/reservation")
     public ResponseEntity<ReservationDto> reserveRestaurant(
             @RequestHeader(name = "X-AUTH-TOKEN") String token,
-            @RequestParam Long restaurantId, @RequestBody ReservationForm form) {
+            @RequestParam Long restaurantId, @RequestBody AddReservationForm form) {
 
         return ResponseEntity.ok(ReservationDto.from(
                 reservationService.reserveRestaurant(

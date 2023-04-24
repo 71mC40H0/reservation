@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -32,6 +33,8 @@ public class QManager extends EntityPathBase<Manager> {
     public final StringPath password = createString("password");
 
     public final StringPath phone = createString("phone");
+
+    public final ListPath<Restaurant, QRestaurant> restaurants = this.<Restaurant, QRestaurant>createList("restaurants", Restaurant.class, QRestaurant.class, PathInits.DIRECT2);
 
     public final StringPath verificationCode = createString("verificationCode");
 

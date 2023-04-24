@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -16,6 +17,8 @@ import com.querydsl.core.types.Path;
 public class QRestaurant extends EntityPathBase<Restaurant> {
 
     private static final long serialVersionUID = -1609606046L;
+
+    private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QRestaurant restaurant = new QRestaurant("restaurant");
 
@@ -31,7 +34,7 @@ public class QRestaurant extends EntityPathBase<Restaurant> {
 
     public final NumberPath<Double> longitude = createNumber("longitude", Double.class);
 
-    public final NumberPath<Long> managerId = createNumber("managerId", Long.class);
+    public final QManager manager;
 
     public final StringPath name = createString("name");
 
@@ -41,16 +44,27 @@ public class QRestaurant extends EntityPathBase<Restaurant> {
 
     public final NumberPath<Double> rating = createNumber("rating", Double.class);
 
+    public final ListPath<Reservation, QReservation> reservations = this.<Reservation, QReservation>createList("reservations", Reservation.class, QReservation.class, PathInits.DIRECT2);
+
     public QRestaurant(String variable) {
-        super(Restaurant.class, forVariable(variable));
+        this(Restaurant.class, forVariable(variable), INITS);
     }
 
     public QRestaurant(Path<? extends Restaurant> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QRestaurant(PathMetadata metadata) {
-        super(Restaurant.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QRestaurant(PathMetadata metadata, PathInits inits) {
+        this(Restaurant.class, metadata, inits);
+    }
+
+    public QRestaurant(Class<? extends Restaurant> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.manager = inits.isInitialized("manager") ? new QManager(forProperty("manager")) : null;
     }
 
 }

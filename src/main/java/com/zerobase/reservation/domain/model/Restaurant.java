@@ -3,11 +3,10 @@ package com.zerobase.reservation.domain.model;
 import com.zerobase.reservation.domain.form.AddRestaurantForm;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,7 +20,10 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long managerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id")
+    private Manager manager;
+
     private String name;
     private String address;
     private String phone;
@@ -32,9 +34,12 @@ public class Restaurant {
     private double latitude;
     private double rating;
 
-    public static Restaurant of(Long managerId, AddRestaurantForm form) {
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reservation> reservations = new ArrayList<>();
+
+    public static Restaurant of(Manager manager, AddRestaurantForm form) {
         return Restaurant.builder()
-                .managerId(managerId)
+                .manager(manager)
                 .name(form.getName())
                 .address(form.getAddress())
                 .phone(form.getPhone())

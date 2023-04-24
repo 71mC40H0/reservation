@@ -3,7 +3,8 @@ package com.zerobase.reservation.domain.dto;
 import com.zerobase.reservation.domain.model.Reservation;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @Builder
@@ -14,17 +15,26 @@ public class ReservationDto {
 
     private Long id;
     private Long customerId;
+    private String customerName;
     private Long restaurantId;
-    private LocalDateTime visitDateTime;
+    private LocalDate visitDate;
+    private LocalTime visitTime;
     private int numberOfPeople;
+
+    private boolean approved;
+    private boolean finished;
 
     public static ReservationDto from(Reservation reservation) {
         return ReservationDto.builder()
                 .id(reservation.getId())
-                .customerId(reservation.getCustomerId())
-                .restaurantId(reservation.getRestaurantId())
-                .visitDateTime(reservation.getVisitDateTime())
+                .customerId(reservation.getCustomer().getId())
+                .customerName(reservation.getCustomer().getName())
+                .restaurantId(reservation.getRestaurant().getId())
+                .visitDate(reservation.getVisitDate())
+                .visitTime(reservation.getVisitTime())
                 .numberOfPeople(reservation.getNumberOfPeople())
+                .approved(reservation.isApproved())
+                .finished(reservation.isFinished())
                 .build();
     }
 }
