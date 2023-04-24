@@ -31,13 +31,13 @@ public class ManagerService {
         return managerRepository.findByEmailAndPasswordAndPartnerIsTrue(email, password);
     }
 
-    // 날짜로 레스토랑 조회
+    // 기간 및 매장 ID로 예약 조회
     public List<Reservation> findAllByRestaurantIdAndVisitDateBetween(Long managerId, Long restaurantId, LocalDate startDate, LocalDate endDate) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_RESTAURANT));
 
         if (!managerId.equals(restaurant.getManager().getId())) {
-            throw new CustomException(ErrorCode.NOT_VALID_RESTAURANT);
+            throw new CustomException(ErrorCode.INVALID_RESTAURANT);
         }
         return reservationRepository.findAllByRestaurantIdAndVisitDateBetween(restaurantId, startDate, endDate);
     }
@@ -45,13 +45,14 @@ public class ManagerService {
     // 예약을 승인한 경우 Reservation의 approved가 true가 되며,
     // 예약을 거절하거나, 예약 시간 안에 방문확인한 경우 Reservation의 finished가 true가 된다
 
+    // 예약 승인
     @Transactional
     public void approveReservation(Long managerId, Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_RESERVATION));
 
         if (!managerId.equals(reservation.getRestaurant().getId())) {
-            throw new CustomException(ErrorCode.NOT_VALID_RESTAURANT);
+            throw new CustomException(ErrorCode.INVALID_RESTAURANT);
         }
 
         if (reservation.isApproved()) {
@@ -63,13 +64,14 @@ public class ManagerService {
         reservation.setApproved(true);
     }
 
+    // 예약 거절
     @Transactional
     public void rejectReservation(Long managerId, Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_RESERVATION));
 
         if (!managerId.equals(reservation.getRestaurant().getId())) {
-            throw new CustomException(ErrorCode.NOT_VALID_RESTAURANT);
+            throw new CustomException(ErrorCode.INVALID_RESTAURANT);
         }
 
         if (reservation.isApproved()) {
